@@ -1,0 +1,41 @@
+{% extends "layout/main_layout.nana" %}
+
+{% block title %}Agenda{% endblock %}
+
+{% block content %}
+<div>
+
+	<div class="container mt-4">
+		<div class="row">
+			<div class="col">
+				<form  action="{{ base_url('addDiary') }}" method="post">
+					<div class="mb-3">
+						<textarea placeholder="What you feel today" name="diaryText" class="form-control" id="diaryText" rows="2"></textarea>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+			<h3>diaries</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col ">
+				<ul class="timeline">
+					{% for diary in diaries %}
+						<li class="timeline-item mb-4">
+							<h5 class="fw-bold">{{ diary.created_at | date("m/d/Y") }}</h5>
+							<p class="text-muted">{{ diary.text }}</p>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
