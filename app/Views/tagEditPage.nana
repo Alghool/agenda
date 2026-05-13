@@ -1,0 +1,54 @@
+{% extends "layout/main_layout.nana" %}
+
+{% block title %}Edit Tag Page{% endblock %}
+
+{% block content %}
+	<div>
+
+		<div class="container mt-4">
+			<div class="row">
+				<div class="col">
+						<h3>edit {{ tag.text }}</h3>
+
+					</form>
+				</div>
+			</div>
+
+			<div class="row">
+			</div>
+			<div class="row">
+				<div class="col ">
+
+					<form>
+						<div class="form-group">
+							<label for="text">Email address</label>
+							<input type="text" class="form-control" id="text" placeholder="{{ tag.name }}" value="{{ tag.name }}">
+							<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+						</div>
+						<div class="form-group">
+							<label for="parent" >change parent tag</label>
+							<select class="custom-select mr-sm-2" id="parent" name="parent_id">
+								<option {% if tag.parent_id = 0 %}selected{% end if %}>none(root tag)</option>
+								{%for thisTag in tags %}
+									<option {% if tag.parent_id = thisTag.id %}selected{% end if %} value="{{ thisTag.id }}">{{ thisTag.fullName }}</option>
+								{% end for %}
+							</select>
+							<small id="emailHelp" class="form-text text-muted">current parent: {{ tag.fullName }}</small>
+						</div>
+						<div class="form-group">
+							<label for="color">color</label>
+							<input type="color" class="form-control" id="color" name="color" value="{{ tag.color }}">
+						</div>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="isContext" name="is_context">
+							<label class="form-check-label" for="isContext">is context</label>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

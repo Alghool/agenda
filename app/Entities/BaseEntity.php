@@ -9,6 +9,9 @@ class BaseEntity extends Entity
 
 	protected $dates   = ['created_at', 'updated_at'];
 	protected $model = null;
+	protected $casts   = [
+		'created_at' => 'datetime'
+	];
 	public function __construct(?array $data = null)
 	{
 		parent::__construct($data);
@@ -27,7 +30,7 @@ class BaseEntity extends Entity
 			return $this->model->save($this);
 		}
 		catch (\Exception $e){
-			log_message("warning", 'Failed to save diary entry '.$this->id().': ' . $e->getMessage());
+			log_message("warning", 'Failed to save new entry '.$this->id().': ' . $e->getMessage());
 			return false;
 		}
 	}

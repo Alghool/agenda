@@ -1,0 +1,49 @@
+{% extends "layout/main_layout.nana" %}
+
+{% block title %}Tags{% endblock %}
+
+{% block content %}
+	<div>
+
+		<div class="container mt-4">
+			<div class="row">
+				<div class="col">
+					<form  action="{{ base_url('tags') }}" method="post">
+						<div class="mb-3">
+							<textarea placeholder="create new Root Tag" name="tagText" class="form-control" id="tagText" rows="1"></textarea>
+							<button type="submit" class="btn btn-primary">Submit</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<h3>tags</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col ">
+					<ul class="timeline">
+						{% for tag in tags %}
+							<li class="timeline-item mb-4">
+								<div>
+									<span>{{ tag.created_at | date("m/d/Y") }} : </span>
+									<span style="backgorund-color: #{{ tag.color }}">{{ tag.text }}</span>
+									&nbsp;&nbsp;&nbsp;
+									<form action="{{ base_url('tags/') }}{{ tag.tag_id }}" method="post">
+										<input type="hidden" name="_method" value="DELETE">
+										<button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+									</form>
+									<a class="" href="{{ base_url('tags/') }}{{ tag.tag_id }}" >edit</a>
+								</div>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
