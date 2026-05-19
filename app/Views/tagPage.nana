@@ -11,6 +11,7 @@
 					<form  action="{{ base_url('tags') }}" method="post">
 						<div class="mb-3">
 							<textarea placeholder="create new Root Tag" name="tagText" class="form-control" id="tagText" rows="1"></textarea>
+							<input type="hidden" name="parentId" value="0">
 							<button type="submit" class="btn btn-primary">Submit</button>
 						</div>
 
@@ -30,7 +31,7 @@
 							<li class="timeline-item mb-4">
 								<div>
 									<span>{{ tag.created_at | date("m/d/Y") }} : </span>
-									<span style="backgorund-color: #{{ tag.color }}">{{ tag.text }}</span>
+									<span style="background-color: {{ tag.color }}">{{ tag.full_name }}</span>
 									&nbsp;&nbsp;&nbsp;
 									<form action="{{ base_url('tags/') }}{{ tag.tag_id }}" method="post">
 										<input type="hidden" name="_method" value="DELETE">

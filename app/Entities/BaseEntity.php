@@ -35,8 +35,19 @@ class BaseEntity extends Entity
 		}
 	}
 
+	public function update()
+	{
+		try{
+			return $this->model->update($this);
+		}
+		catch (\Exception $e){
+			log_message("warning", 'Failed to update entry '.$this->id().': ' . $e->getMessage());
+			return false;
+		}
+	}
+
 	public function id()
 	{
-		return $this->attributes[$mymodel->primaryKey] ?? null;
+		return $this->attributes[$this->model->primaryKey] ?? null;
 	}
 }

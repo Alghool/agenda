@@ -19,6 +19,9 @@ class Tags extends Migration
 		    'text' => [
 			    'type' => 'text'
 		    ],
+			'full_name' =>[
+				'type' => 'text'
+			],
 		    'parent_id' => [
 			    'type'           => 'INT',
 			    'constraint'     => 5,

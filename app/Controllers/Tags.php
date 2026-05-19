@@ -36,7 +36,7 @@ class Tags extends ResourceController
 	    $tagModel = new TagModel();
 	    $tags = $tagModel->orderBy("created_at", "DESC")->findAll();
 
-	    return $twig->render( 'tagPage', ['tags' =>$tags, 'tag' => $tagModel->find($id)] );
+	    return $twig->render( 'tagEditPage', ['tags' =>$tags, 'tag' => $tagModel->find($id)] );
     }
 
     /**
@@ -58,6 +58,15 @@ class Tags extends ResourceController
     {
 	    $tag = new Tag();
 	    $tag->text = $this->request->getPost('tagText');
+	    $parentId = $this->request->getPost('parentId');
+	    $tag->full_name = $tag->text;
+		if($parentId){
+			$tagModel = new TagModel();
+			$parentTag = $tagModel->find($parentId);
+			$tag->parent_id = $parentId ;
+			$tag->full_name = $parentTag->full_name."\\" .$tag->text ;
+		}
+
 	    $tag->save();
 	    return redirect()->to('/tags');
     }
@@ -71,7 +80,7 @@ class Tags extends ResourceController
      */
     public function edit($id = null)
     {
-        //
+
     }
 
     /**
@@ -83,7 +92,21 @@ class Tags extends ResourceController
      */
     public function update($id = null)
     {
-        //
+	    $tagModel = new TagModel();
+	    $tag = $tagModel->find($id);
+		$tag->text = $this->request->getPost('text');
+		$tag->full_name = $tag->text;
+		$parentId = $this->request->getPost('parentId');
+	    if($parentId && $parentId!=$tag->parent_id){
+		    //todo solve this edge case
+			$parentTag = $tagModel->find($parentId);
+		    $tag->parent_id = $parentId ;
+		    $tag->full_name = $parentTag->full_name."\\" .$tag->text ;
+	    }
+		$tag->color = $this->request->getPost('color');
+		$tag->is_context = $this->request->getPost('is_context')? 1 : 0;
+		$tag->save();
+	    return redirect()->to('/tags');
     }
 
     /**

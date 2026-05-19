@@ -19,28 +19,30 @@
 			<div class="row">
 				<div class="col ">
 
-					<form>
+					<form action="{{ base_url('tags/') }}{{ tag.id }}" method="POST">
+						<input type="hidden" name="_method" value="PUT">
 						<div class="form-group">
-							<label for="text">Email address</label>
-							<input type="text" class="form-control" id="text" placeholder="{{ tag.name }}" value="{{ tag.name }}">
-							<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+							<label for="text">tag text</label>
+							<input type="text" class="form-control" id="text" name="text" placeholder="{{ tag.text }}" value="{{ tag.text }}">
 						</div>
 						<div class="form-group">
 							<label for="parent" >change parent tag</label>
-							<select class="custom-select mr-sm-2" id="parent" name="parent_id">
-								<option {% if tag.parent_id = 0 %}selected{% end if %}>none(root tag)</option>
+							<select class="custom-select mr-sm-2" id="parent" name="parentId">
+								<option {% if tag.parent_id == 0 %}selected{% endif %}>none(root tag)</option>
 								{%for thisTag in tags %}
-									<option {% if tag.parent_id = thisTag.id %}selected{% end if %} value="{{ thisTag.id }}">{{ thisTag.fullName }}</option>
-								{% end for %}
+									{% if tag.id != thisTag.id %}
+									<option {% if tag.parent_id == thisTag.id %}selected{% endif %} value="{{ thisTag.id }}">{{ thisTag.full_name }}</option>
+									{% endif %}
+								{% endfor %}
 							</select>
-							<small id="emailHelp" class="form-text text-muted">current parent: {{ tag.fullName }}</small>
+							<small id="emailHelp" class="form-text text-muted">current parent: {{ tag.full_name }}</small>
 						</div>
 						<div class="form-group">
 							<label for="color">color</label>
 							<input type="color" class="form-control" id="color" name="color" value="{{ tag.color }}">
 						</div>
 						<div class="form-check">
-							<input type="checkbox" class="form-check-input" id="isContext" name="is_context">
+							<input type="checkbox" class="form-check-input" id="isContext" name="is_context" {{ tag.is_context? 'checked="checked"' : ''}}  value="1">
 							<label class="form-check-label" for="isContext">is context</label>
 						</div>
 						<button type="submit" class="btn btn-primary">Submit</button>
