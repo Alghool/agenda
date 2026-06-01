@@ -9,3 +9,4 @@ $routes->get('/', 'Home::index');
 
 $routes->post('addDiary', 'Home::addDiary');
 
+$routes->resource('tags');
