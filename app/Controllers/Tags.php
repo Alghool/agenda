@@ -94,15 +94,37 @@ class Tags extends ResourceController
     {
 	    $tagModel = new TagModel();
 	    $tag = $tagModel->find($id);
-		$tag->text = $this->request->getPost('text');
-		$tag->full_name = $tag->text;
+		$tagText = $this->request->getPost('text');
+		if($tag->text !== $tagText){
+			$tag->text = $tagText;
+			$tag->full_name = "";
+		}
+
 		$parentId = $this->request->getPost('parentId');
-	    if($parentId && $parentId!=$tag->parent_id){
-		    //todo solve this edge case
-			$parentTag = $tagModel->find($parentId);
+	    if($parentId!=$tag->parent_id){
 		    $tag->parent_id = $parentId ;
-		    $tag->full_name = $parentTag->full_name."\\" .$tag->text ;
+		    $tag->full_name = "";
 	    }
+
+		if ($tag->full_name == ""){
+			$parentTag = $tagModel->find($parentId);
+			if($parentTag){
+				$tag->full_name = $parentTag->full_name."\\" .$tag->text ;
+			}
+			else{
+				$tag->full_name = $tag->text;
+			}
+			//create a base model set the magic get to get the id attribute automatic
+			//try to move the full name functionality to entity to automatically updated when the tag updated
+			//move the where function to the model
+			$childrenTag = $tagModel->where("parent_id", $tag->id())->findAll();
+			foreach($childrenTag as $child){
+				$child->full_name = $tag->full_name."\\" .$child->text ;
+				// add support to add functions on the patch
+				$child->save();
+			}
+		}
+
 		$tag->color = $this->request->getPost('color');
 		$tag->is_context = $this->request->getPost('is_context')? 1 : 0;
 		$tag->save();
@@ -119,6 +141,13 @@ class Tags extends ResourceController
     public function delete($id = null)
     {
 	    $tagModel = new TagModel();
+	    $childrenTag = $tagModel->where("parent_id", $id)->findAll();
+	    foreach($childrenTag as $child){
+		    $child->parent_id = 0;
+			$child->full_name = $child->text;
+		    // add support to add functions on the patch
+		    $child->save();
+	    }
 	    $tagModel->delete($id);
 	    return redirect()->to('/tags');
     }
