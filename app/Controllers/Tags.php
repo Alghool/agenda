@@ -12,7 +12,7 @@ class Tags extends ResourceController
     /**
      * Return an array of resource objects, themselves in array format.
      *
-     * @return ResponseInterface
+     * @return ResponseInterface|string
      */
     public function index()
     {
@@ -28,7 +28,7 @@ class Tags extends ResourceController
      *
      * @param int|string|null $id
      *
-     * @return ResponseInterface
+     * @return ResponseInterface|string
      */
     public function show($id = null)
     {
@@ -93,37 +93,14 @@ class Tags extends ResourceController
     public function update($id = null)
     {
 	    $tagModel = new TagModel();
-	    $tag = $tagModel->find($id);
 		$tagText = $this->request->getPost('text');
-		if($tag->text !== $tagText){
-			$tag->text = $tagText;
-			$tag->full_name = "";
-		}
+		$tag = $tagModel->find($id);
+		$tag->text = $tagText;
 
 		$parentId = $this->request->getPost('parentId');
 	    if($parentId!=$tag->parent_id){
 		    $tag->parent_id = $parentId ;
-		    $tag->full_name = "";
 	    }
-
-		if ($tag->full_name == ""){
-			$parentTag = $tagModel->find($parentId);
-			if($parentTag){
-				$tag->full_name = $parentTag->full_name."\\" .$tag->text ;
-			}
-			else{
-				$tag->full_name = $tag->text;
-			}
-			//create a base model set the magic get to get the id attribute automatic
-			//try to move the full name functionality to entity to automatically updated when the tag updated
-			//move the where function to the model
-			$childrenTag = $tagModel->where("parent_id", $tag->id())->findAll();
-			foreach($childrenTag as $child){
-				$child->full_name = $tag->full_name."\\" .$child->text ;
-				// add support to add functions on the patch
-				$child->save();
-			}
-		}
 
 		$tag->color = $this->request->getPost('color');
 		$tag->is_context = $this->request->getPost('is_context')? 1 : 0;
@@ -141,13 +118,6 @@ class Tags extends ResourceController
     public function delete($id = null)
     {
 	    $tagModel = new TagModel();
-	    $childrenTag = $tagModel->where("parent_id", $id)->findAll();
-	    foreach($childrenTag as $child){
-		    $child->parent_id = 0;
-			$child->full_name = $child->text;
-		    // add support to add functions on the patch
-		    $child->save();
-	    }
 	    $tagModel->delete($id);
 	    return redirect()->to('/tags');
     }
