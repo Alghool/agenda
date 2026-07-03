@@ -9,8 +9,6 @@
 			<div class="row">
 				<div class="col">
 						<h3>edit {{ tag.text }}</h3>
-
-					</form>
 				</div>
 			</div>
 
@@ -28,7 +26,7 @@
 						<div class="form-group">
 							<label for="parent" >change parent tag</label>
 							<select class="custom-select mr-sm-2" id="parent" name="parentId">
-								<option {% if tag.parent_id == 0 %}selected{% endif %}>none(root tag)</option>
+								<option {% if tag.parent_id == 0 %}selected{% endif %} value="0" >none(root tag)</option>
 								{%for thisTag in tags %}
 									{% if tag.id != thisTag.id %}
 									<option {% if tag.parent_id == thisTag.id %}selected{% endif %} value="{{ thisTag.id }}">{{ thisTag.full_name }}</option>
